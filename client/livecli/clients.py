@@ -95,7 +95,7 @@ class Client(abc.ABC):
 
 
 class DevClient(Client):
-    STATIC_URL = 'http://localhost:5000'
+    STATIC_URL = 'http://localhost:5002'
     FIREBASE_URL = 'http://localhost:9000'
     DEMODATA_DIR = os.path.join(os.path.dirname(__file__), '../../frontend/public/.dev')
 

@@ -26,9 +26,9 @@ const siteconfig = {
     firstAc: false,
   },
   firebase: {
-    apiKey: 'AIzaSyDAplg3phAg4pO0gkZO2THZEx9iceyT0tI',
+    apiKey: 'AIzaSyCLW-i1SkBFnE6fH201j2uRLSYR1v6IWuc',
     authDomain: null, // Inferred at run time
-    messagingSenderId: '880347634771',
+    messagingSenderId: '1016093609700',
     databaseURL: null, // Inferred at run time
   },
   misc: {

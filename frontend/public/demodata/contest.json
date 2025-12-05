@@ -1,11 +1,11 @@
 {
-    "frontPageHtml": "<h1 class=\"page-header\">LiveSite</h1>\n\n<p>This is a demo</p>\n",
+    "frontPageHtml": "<h1 class=\"page-header\">CCUPC 2025 Final Contest</h1>\n\n<p>First Semester</p>\n",
     "problemLink": null,
     "times": {
-        "end": 1513488600,
-        "freeze": 1513486800,
-        "scale": 1,
-        "start": 1513470600
+        "start": 1766896200,
+        "end": 1766914200,
+        "freeze": 1766910600,
+        "scale": 1
     },
-    "title": "LiveSite"
+    "title": "2025 CCUPC Final Contest"
 }

@@ -108,6 +108,7 @@ def scrape_main(options: argparse.Namespace) -> None:
             upload_end_time = contest_end_time + datetime.timedelta(
                 minutes=options.post_contest_minutes)
             upload = upload_start_time <= now <= upload_end_time
+            
 
         _wait_next_tick(options.interval_seconds)
 
