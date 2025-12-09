@@ -3,18 +3,9 @@
         "country": "Unknown",
         "id": "1",
         "members": [],
-        "name": "測試隊伍1",
+        "name": "test",
         "photo": "/images/default-photo-regional.png",
         "university": "Keio University",
         "universityShort": "Keio University"
-    },
-    "2": {
-        "country": "Unknown",
-        "id": "2",
-        "members": [],
-        "name": "測試隊伍2",
-        "photo": "/images/default-photo-regional.png",
-        "university": "University of Miku",
-        "universityShort": "University of Miku"
     }
 }

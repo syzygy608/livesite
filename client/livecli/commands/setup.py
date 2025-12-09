@@ -41,7 +41,7 @@ def setup_main(options: argparse.Namespace) -> None:
     else:
         flow = google_auth_oauthlib.flow.InstalledAppFlow.from_client_config(
             constants.CLIENT_CONFIG, scopes=constants.SCOPES)
-        creds = flow.run_console()
+        creds = flow.run_local_server()
         user_info = {
             'client_id': creds.client_id,
             'client_secret': creds.client_secret,

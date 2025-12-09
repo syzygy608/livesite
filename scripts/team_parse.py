@@ -2,7 +2,7 @@ import requests
 import json
 
 # contest ID
-CID = "dj-5"
+CID = "dj-6"
 
 # API URL
 BASE_URL = "https://ccupc-contest.csie.io/api/v4/contests"

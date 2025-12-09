@@ -25,32 +25,6 @@
       "rank": "-",
       "solved": 0,
       "teamId": "1"
-    },
-    {
-      "penalty": 0,
-      "problems": [
-        {
-          "attempts": 0,
-          "penalty": 0,
-          "pendings": 0,
-          "solved": false
-        },
-        {
-          "attempts": 0,
-          "penalty": 0,
-          "pendings": 0,
-          "solved": false
-        },
-        {
-          "attempts": 0,
-          "penalty": 0,
-          "pendings": 0,
-          "solved": false
-        }
-      ],
-      "rank": "-",
-      "solved": 0,
-      "teamId": "2"
     }
   ],
   "problems": [

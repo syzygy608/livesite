@@ -15,9 +15,10 @@
 import os
 
 SCOPES = (
-    'https://www.googleapis.com/auth/userinfo.email',
-    'https://www.googleapis.com/auth/firebase.database',
-    'https://www.googleapis.com/auth/devstorage.read_write',
+    "https://www.googleapis.com/auth/devstorage.read_write",
+    "https://www.googleapis.com/auth/firebase.database",
+    "https://www.googleapis.com/auth/userinfo.email",
+    "openid"  # Add this
 )
 
 CLIENT_CONFIG = {

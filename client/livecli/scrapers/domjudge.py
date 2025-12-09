@@ -46,9 +46,8 @@ class DomjudgeScraper(base.Scraper):
 
         if doc.select('#loginform'):
             raise base.NeedLoginException()
-
         standings = {'problems': [], 'entries': []}
-
+    
         scoreheader_elems = doc.select('.scoreheader')
         if not scoreheader_elems:
             raise Exception('Scoreboard not available yet')
@@ -74,11 +73,10 @@ class DomjudgeScraper(base.Scraper):
                 'name': label,
                 'color': color,
             })
-
         scoreboard_elem = doc.select('table.scoreboard')[0]
         last_rank = 1
         for team_elem in scoreboard_elem.select('tbody tr'):
-            if not team_elem.attrs.get('id', '').startswith('team:'):
+            if not team_elem.select('.scorepl'):
                 break
             team_problems = []
             for problem_elem in team_elem.select('td.score_cell'):

@@ -2,9 +2,6 @@ import sys
 import json
 from datetime import datetime, timedelta, timezone
 
-# CONTEST ID
-CID = "dj-5"
-
 # No longer need BASE_URL since we're reading from stdin
 
 def parse_domjudge_time(time_str):
