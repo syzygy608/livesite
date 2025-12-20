@@ -152,7 +152,7 @@ a.no-decoration {
 
 .standard-standings .team-row .team-name {
   flex: 0 0 auto;
-  width: 240px;
+  width: 280px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

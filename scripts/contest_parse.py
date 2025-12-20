@@ -1,26 +1,22 @@
 import sys
 import json
-from datetime import datetime, timedelta, timezone
+import yaml
+from datetime import datetime
 
-# No longer need BASE_URL since we're reading from stdin
+# 用來讓 YAML 輸出 HTML 時使用 Block Style (|)
+class LiteralStr(str): pass
+
+def change_style(dumper, data):
+    return dumper.represent_scalar('tag:yaml.org,2002:str', data, style='|')
+
+yaml.add_representer(LiteralStr, change_style)
 
 def parse_domjudge_time(time_str):
-    """
-    DOMjudge 的時間格式可能是：
-    - "2025-12-05T13:30:00+08:00"（帶時區）
-    - "2025-12-05T05:30:00Z"（UTC）
-    - null
-    """
     if not time_str:
         return None
-    
-    # 統一處理 Z 結尾 → 換成 +00:00
     time_str = time_str.replace('Z', '+00:00')
-    
     try:
-        # fromisoformat 支援 +08:00 這種格式
         dt = datetime.fromisoformat(time_str)
-        # 確保是 aware datetime（有時區資訊）
         if dt.tzinfo is None:
             return None
         return int(dt.timestamp())
@@ -29,20 +25,12 @@ def parse_domjudge_time(time_str):
         return None
 
 def parse_duration(duration_str):
-    """
-    解析 DOMjudge 的 duration 字串，例如：
-    - "5:00:00" → 5 小時
-    - "8760:00:00.000" → 很多小時（你這場是測試用超長比賽）
-    - null
-    """
     if not duration_str:
         return 0
-    
     try:
         parts = duration_str.split(':')
         if '.' in parts[-1]:
             parts[-1] = parts[-1].split('.')[0]
-        
         hours = int(parts[0])
         minutes = int(parts[1]) if len(parts) > 1 else 0
         seconds = int(parts[2]) if len(parts) > 2 else 0
@@ -52,16 +40,17 @@ def parse_duration(duration_str):
 
 def fetch_contest_config():
     try:
-        print("Reading contest info from stdin...")
-        # 从 stdin 读取 JSON 数据
+        # 從 stdin 讀取 JSON (例如: curl ... | python script.py)
         input_data = sys.stdin.read()
+        if not input_data:
+            print("No input provided via stdin.")
+            return
+            
         data = json.loads(input_data)
-
-        print("Input JSON:", json.dumps(data, indent=2, ensure_ascii=False))
 
         start_str = data.get("start_time")
         end_str = data.get("end_time")
-        freeze_duration_str = data.get("scoreboard_freeze_duration")  # 可能是 "1:00:00" 或 null
+        freeze_duration_str = data.get("scoreboard_freeze_duration")
 
         start_ts = parse_domjudge_time(start_str)
         end_ts = parse_domjudge_time(end_str)
@@ -70,36 +59,47 @@ def fetch_contest_config():
             print("無法取得比賽開始或結束時間")
             return
 
-        # 計算 freeze 時間
         if freeze_duration_str and freeze_duration_str.strip():
             freeze_seconds = parse_duration(freeze_duration_str)
             freeze_ts = end_ts - freeze_seconds
-            print(f"凍榜時間：結束前 {freeze_seconds} 秒 → {datetime.fromtimestamp(freeze_ts)}")
         else:
-            # 沒有凍榜 → freeze 時間 = 結束時間（榜單到最後一刻都更新）
             freeze_ts = end_ts
-            print("無凍榜設定，freeze 時間設為結束時間")
+
+        contest_name = data.get("name", "LiveSite")
+
+        # 構建 HTML (使用 LiteralStr 讓它在 YAML 中變漂亮)
+        html_content = (
+            f"<h1 class=\"page-header\">{contest_name}</h1>\n"
+            "<p>Powered by <a href=\"https://www.domjudge.org/\">DOMjudge</a> and <a href=\"https://github.com/icpcsec/livesite\">Livesite</a></p>\n"
+            "<dl class=\"dl-horizontal\">\n"
+            f"  <dt>Contest Start</dt><dd>{start_str}</dd>\n"
+            f"  <dt>Contest End</dt><dd>{end_str}</dd>\n"
+            "</dl>\n"
+        )
 
         output_data = {
-            "frontPageHtml": "<h1 class=\"page-header\">LiveSite</h1>\n\n<p>CCUPC week8 即時榜單</p>\n",
-            "problemLink": None,
+            "title": contest_name,
+            "frontPageHtml": LiteralStr(html_content),
             "times": {
+                # YAML 支援 Unix Timestamp，也支援 ISO 字串
+                # 這裡使用 Timestamp 確保跨時區計算準確
                 "start": start_ts,
+                "freeze": freeze_ts,
                 "end": end_ts,
-                "freeze": freeze_ts,        # 正確的凍榜開始時間（UNIX timestamp）
                 "scale": 1
             },
-            "title": data.get("name", "LiveSite")
+            "problemLink": None 
         }
 
-        json_result = json.dumps(output_data, indent=4, ensure_ascii=False)
-        print("\nGenerated contest.json content:")
-        print(json_result)
-
-        with open('contest.json', 'w', encoding='utf-8') as f:
-            f.write(json_result)
-
-        print("\ncontest.json 已成功寫入！")
+        print("Writing to contest.yaml...")
+        with open('contest.yaml', 'w', encoding='utf-8') as f:
+            yaml.dump(output_data, f, allow_unicode=True, sort_keys=False)
+        
+        print("Success! contest.yaml generated.")
+        
+        # 顯示預覽
+        print("\n--- YAML Preview ---\n")
+        print(yaml.dump(output_data, allow_unicode=True, sort_keys=False))
 
     except json.JSONDecodeError as e:
         print(f"JSON 解析失敗: {e}")

@@ -7,5 +7,7 @@
 *.rej
 *.swp
 .DS_Store
+scripts/*.yaml
 scripts/*.json
 client/logs/*
+siteconfig.ts

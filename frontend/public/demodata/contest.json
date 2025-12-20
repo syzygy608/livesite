@@ -1,11 +1,11 @@
 {
-    "frontPageHtml": "<h1 class=\"page-header\">中正競程期末檢測賽 114-1</h1>\n",
+    "frontPageHtml": "<h1 class=\"page-header\">2025 CCUPC Final Contest</h1>\n<p>Powered by <a href=\"https://www.domjudge.org/\">DOMjudge</a> and <a href=\"https://github.com/icpcsec/livesite\">Livesite</a></p>\n<dl class=\"dl-horizontal\">\n  <dt>Contest Start</dt><dd>2025-12-28T12:30:00+08:00</dd>\n  <dt>Contest End</dt><dd>2025-12-28T17:30:00+08:00</dd>\n</dl>\n",
     "problemLink": null,
     "times": {
-        "start": 1766896200,
         "end": 1766914200,
         "freeze": 1766910600,
-        "scale": 1
+        "scale": 1,
+        "start": 1766896200
     },
     "title": "2025 CCUPC Final Contest"
 }

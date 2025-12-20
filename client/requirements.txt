@@ -1,8 +1,9 @@
 beautifulsoup4==4.11.1
 html5lib==1.1
-google-auth
+google-auth==2.23.0
 google-auth-oauthlib
 google-cloud-storage
-pyyaml
 requests
 yapf
+pyyaml
+google

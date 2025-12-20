@@ -1,8 +1,8 @@
 import requests
-import json
-
+import yaml
+import sys
 # contest ID
-CID = "dj-6"
+CID = "dj-5"
 
 # API URL
 BASE_URL = "https://ccupc-contest.csie.io/api/v4/contests"
@@ -30,40 +30,47 @@ def fetch_data():
         for team in teams_data:
             if team.get('hidden'):
                 continue
-
             
-            final_name = team.get('display_name')
-            if not final_name:
-                final_name = team.get('name')
-
-            team_id = final_name.split(':')[0].strip()
-            final_name = final_name.split(':', 1)[-1].strip()
+            raw_name = team.get('name')
+            
+            # 處理 DOMjudge 格式 "team_id: team_name"
+            if ':' in raw_name:
+                team_id = raw_name.split(':')[0].strip()
+                final_name = raw_name.split(':', 1)[-1].strip()
+            else:
+                team_id = team.get('id')
+                final_name = raw_name
 
             photo_url = DEFAULT_PHOTO
             if team.get('photo') and len(team['photo']) > 0:
                 photo_url = team['photo'][0].get('href', DEFAULT_PHOTO)
 
             university_name = team.get('affiliation', '')
+            # 如果沒有機構名稱，嘗試從 Group ID 找
             if not university_name and team.get('group_ids'):
                 first_group_id = team['group_ids'][0]
                 university_name = groups_map.get(first_group_id, '')
 
+            # 構建符合 YAML 範例的物件
             team_obj = {
-                "country": team.get('nationality', 'Unknown'),
-                "id": team_id,
-                "members": [], 
                 "name": final_name,
-                "photo": photo_url,
                 "university": university_name,
-                "universityShort": university_name
+                "universityEn": university_name, # 範例中的 universityEn
+                "members": [], # API 通常沒有成員細節，保持空陣列
+                "photo": photo_url,
+                # "country": team.get('nationality', 'Unknown') # 如果需要國家可取消註解
             }
 
+            # YAML 的 key 是 team_id
             formatted_output[team_id] = team_obj
 
-        json_result = json.dumps(formatted_output, indent=4, ensure_ascii=False)
+        print("Writing to teams.yaml...")
+        with open('teams.yaml', 'w', encoding='utf-8') as f:
+            # allow_unicode=True 確保中文不會變成 \uXXXX
+            # sort_keys=False 保持插入順序 (或者依 ID 排序)
+            yaml.dump(formatted_output, f, allow_unicode=True, sort_keys=False, default_flow_style=False)
 
-        with open('teams.json', 'w', encoding='utf-8') as f:
-            f.write(json_result)
+        print("Done!")
 
     except requests.exceptions.RequestException as e:
         print(f"API requests error: {e}")
